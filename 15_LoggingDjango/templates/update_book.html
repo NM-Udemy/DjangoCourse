@@ -1,0 +1,21 @@
+{% if messages %}
+{% for message in messages %}
+  {{ message.message }}
+{% endfor %}
+{% endif %}
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <hr>
+  {% for picture in pictures %}
+    <a href="{% url 'store:delete_picture' pk=picture.id %}"><img width="100px" height="100px" src="{{ picture.picture.url }}"></a>
+  {% endfor %}
+  {{ picture_form.as_p }}
+  <input type="submit" value="更新">
+</form>
+
+<style>
+img:hover{
+  opacity: 0.2;
+}
+</style>

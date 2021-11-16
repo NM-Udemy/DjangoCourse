@@ -1,0 +1,9 @@
+{% extends "user/base.html" %}
+{% block content %}
+<h1>ログイン画面</h1>
+<form method="POST">
+{% csrf_token %}
+{{ login_form.as_p }}
+<input type="submit" value="ログイン">
+</form>
+{% endblock %}

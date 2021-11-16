@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <title>{% block title %}DjangoForm{% endblock %}</title>
+  </head>
+  <body>
+    <header>
+      <a href="{% url 'form_app:insert_student' %}">メンバー追加</a>
+      <a href="{% url 'form_app:students_list' %}">メンバー一覧</a>
+      <a href="{% url 'form_app:insert_multiple_students' %}">メンバー一括追加</a>
+    </header>
+    {% block content %}{% endblock %}
+  </body>
+</html>

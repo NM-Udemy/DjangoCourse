@@ -1,0 +1,13 @@
+2021-01-12 16:34:18,573 ERROR [D:\10_work\10_udemy\07_Django\02_source\03_source\ClassBasedView\class_based_view\class_based_view\middleware.py:14] この名前は利用できません
+Traceback (most recent call last):
+  File "C:\Users\naoki\anaconda3\envs\djangoenv\lib\site-packages\django\core\handlers\base.py", line 179, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\naoki\anaconda3\envs\djangoenv\lib\site-packages\django\views\generic\base.py", line 70, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\naoki\anaconda3\envs\djangoenv\lib\site-packages\django\views\generic\base.py", line 98, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Users\naoki\anaconda3\envs\djangoenv\lib\site-packages\django\views\generic\base.py", line 159, in get
+    context = self.get_context_data(**kwargs)
+  File "D:\10_work\10_udemy\07_Django\02_source\03_source\ClassBasedView\class_based_view\store\views.py", line 49, in get_context_data
+    raise Http404('この名前は利用できません')
+django.http.response.Http404: この名前は利用できません

@@ -1,0 +1,13 @@
+<form method="{% if method %}{{ method }}{% else %}POST{% endif %}" action="{% if action %}{{ action }}{% endif %}">
+   {% csrf_token %}
+   {% if as_table %}
+     <table>
+        {{ form.as_table }}
+      </table>
+   {% elif as_ul %}
+      {{ form.as_ul }}
+   {% else %}
+      {{ form.as_p }}
+   {% endif %}
+    <input type="submit" value="送信">
+</form>

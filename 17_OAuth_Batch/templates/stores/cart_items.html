@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="col-10 offset-1">
+{% if items %}
+<table>
+<tbody>
+{% for item in items %}
+   <tr>
+     <td style="width:20%">
+     {% if item.picture %}
+     <img width="75px" height="75px" src={{ item.picture.url }}>
+     {% endif %}
+     </td>
+     <td style="width:20%">
+      {{ item.name }}<br>{{ item.price }}円
+     </td>
+     <td>
+       {{ item.quantity }}個<br>
+       {% if not item.in_stock %}
+         在庫数を超えています。変更してください
+       {% endif %}
+     </td>
+     <td align="right">
+       <a class="btn btn-primary" href="{% url 'stores:update_cart' pk=item.id %}">変更する</a>
+       <a class="btn btn-danger" href="{% url 'stores:delete_cart' pk=item.id %}">削除する</a>
+     </td>
+   </tr>
+{% endfor %}
+</tbody>
+</table>
+<hr>
+<h3 class="offset-9">合計: {{ total_price }}円</h3>
+<a class="offset-9 btn btn-secondary" href="{% url 'stores:input_address' %}">住所を入力する</a>
+{% else %}
+<h2>カートの中に商品が入っていません</h2>
+{% endif %}
+</div>
+{% endblock %}

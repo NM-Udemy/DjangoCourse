@@ -1,0 +1,18 @@
+<p><a href="{% url 'store:add_book' %}">データ追加</a></p>
+<table>
+    <tbody>
+    {% for object in object_list %}
+    <tr>
+        <td>名前: <a href="{{ object.get_absolute_url }}">{{ object.name }}</a></td>
+        <td>説明: {{ object.description }}</td>
+        <td><a href="{% url 'store:edit_book' object.id %}">編集</a></td>
+        <td><a href="{% url 'store:delete_book' object.id %}">削除</a></td>
+        <td>
+            {% for picture in object.pictures_set.all %}
+                <img width="20px" height="20px" src={{ picture.picture.url }}>
+            {% endfor %}
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Form Upload</title>
+  </head>
+  <body>
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" value="保存">
+    </form>
+    {% if user %}
+      <p>name: {{ user.name }}</p>
+      <p>age: {{ user.age }}</p>
+      <img src="{{ user.picture.url }}">
+    {% endif %}
+  </body>
+</html>

@@ -1,0 +1,10 @@
+{% extends "form_app/base.html" %}
+{% block title %}メンバー削除画面{{ block.super }}{% endblock %}
+{% block content %}
+<form method="POST" enctype="multipart/form-data">
+   {% csrf_token %}
+       {{ delete_form.as_p }}
+    <input type = "submit" value="削除する">
+</form>
+
+{% endblock %}

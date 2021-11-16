@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<p>{{ object.product.name }}: 在庫{{ object.product.stock }}</p>
+<form method="POST">
+{% csrf_token %}
+{{ form.as_p }}
+<input type="submit" value="更新">
+</form>
+
+{% endblock %}

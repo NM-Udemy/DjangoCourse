@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>掲示板作成画面</h3>
+<form method="POST">
+{% csrf_token %}
+{{ create_theme_form.as_p }}
+<input type="submit" value="掲示板作成">
+</form>
+{% endblock %}

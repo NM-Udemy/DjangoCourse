@@ -1,0 +1,4 @@
+2021-01-12 16:46:33,017 INFO [D:\10_work\10_udemy\07_Django\02_source\03_source\ClassBasedView\class_based_view\class_based_view\middleware.py:27] /store/edit_book/6: 0.014960765838623047s
+2021-01-12 16:46:35,734 INFO [D:\10_work\10_udemy\07_Django\02_source\03_source\ClassBasedView\class_based_view\class_based_view\middleware.py:27] /store/edit_book/5: 0.007001638412475586s
+2021-01-12 16:46:37,767 INFO [D:\10_work\10_udemy\07_Django\02_source\03_source\ClassBasedView\class_based_view\class_based_view\middleware.py:27] /store/delete_book/10: 0.006987094879150391s
+2021-01-12 16:46:38,734 INFO [D:\10_work\10_udemy\07_Django\02_source\03_source\ClassBasedView\class_based_view\class_based_view\middleware.py:27] /store/list_books/: 0.001993894577026367s

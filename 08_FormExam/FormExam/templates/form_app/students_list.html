@@ -1,0 +1,18 @@
+{% extends 'form_app/base.html' %}
+{% block title %}メンバ―一覧画面 {{ block.super }} {% endblock %}
+{% block content %}
+<table>
+   <tr>
+      <th>名前</th>
+      <th>年齢</th>
+      <th>学年</th>
+   </tr>
+   {% for student in students %}
+   <tr>
+        <td><a href="{% url 'form_app:update_student' id=student.id %}">{{ student.name }}</a></td>
+        <td>{{ student.age }}</td>
+        <td>{{ student.grade }}</td>
+   </tr>
+   {% endfor %}
+</table>
+{% endblock %}

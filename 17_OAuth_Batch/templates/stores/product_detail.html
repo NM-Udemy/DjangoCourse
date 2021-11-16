@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="col-6 offset-3">
+   <div style="float: left; padding: 0 20px 20px 0">
+      {% for picture in object.productpictures_set.all %}
+        {% if forloop.first %}
+           <div><img width="200px" height="200px" src={{ picture.picture.url }}></div>
+        {% else %}
+           <img width="50px" height="50px" src={{ picture.picture.url }}>
+        {% endif %}
+      {% endfor %}
+   </div>
+   <div>
+      <p>商品名: {{ object.name }}</p>
+      <p>値段: {{ object.price }}</p>
+      <p>残量: {{ object.stock }}</p>
+      {% if object.stock %}
+        {% if is_added %}
+           <p class="btn btn-danger">カートに追加済みです</p>
+        {% else %}
+           <input type="number" id="quantity" name="quantity" min="1" max="{{ object.stock }}"><br>
+           <button id="add_product" type="button" class="btn btn-primary">カートに追加</button>
+        {% endif %}
+      {% endif %}
+      <input name="csrfToken" value="{{ csrf_token }}" type="hidden">
+   </div>
+</div>
+<script>
+$('#add_product').click(function(){
+    var quantity = $("#quantity").val();
+    var token = $('input[name="csrfToken"]').attr('value');
+    $.ajaxSetup({
+        beforeSend: function(xhr){
+            xhr.setRequestHeader('X-CSRFToken', token);
+        }
+    })
+    $.ajax({
+        url: "{% url 'stores:add_product' %}",
+        type: "POST",
+        data: {product_id: "{{ object.id }}", quantity: quantity},
+        dataType: "json",
+        success: function(json){
+            if(json.message){
+                $('#add_product').attr('class', 'btn btn-danger');
+                $('#add_product').html('カートに登録済みです');
+                $('#add_product').prop('disabled', true);
+                alert(json.message);
+            }
+        },
+        error: function(error){
+            alert(error.responseJSON.message);
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,12 @@
+<table>
+  <tr>
+    <th>名前</th>
+    <th>値段</th>
+  </tr>
+  {% for item in items %}
+  <tr>
+    <td><a href="{% url 'store:item_detail' id=item.id %}">{{ item.name }}</a></td>
+    <td>{{ item.price }}円</td>
+  </tr>
+  {% endfor %}
+</table>
