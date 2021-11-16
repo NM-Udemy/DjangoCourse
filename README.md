@@ -1,0 +1,2 @@
+# DjangoCourse
+UdemyのDjango講座のソースコードです
