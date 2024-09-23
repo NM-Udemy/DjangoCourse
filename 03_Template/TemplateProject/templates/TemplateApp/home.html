@@ -1,0 +1,35 @@
+{% load filter %}
+{% load static %}
+{# <h1>Name: {{ my_name }}</h1> #}
+{# <h2>果物: {{ favourite_fruits.2 }}</h2> #}
+{# <h3>Age: {{ my_info.age }}</h3> #}
+{{ my_name }}
+{# for #}
+<ul>
+    {% for fruit in favourite_fruits %}
+        <li>{{ fruit }}</li>
+    {% endfor %}
+</ul>
+
+{# if #}
+{% if 'grape' in favourite_fruits %}
+  <p>Grapeあります</p>
+{% elif 'Lemon' in favourite_fruits %}
+  <p>Lemonあります</p>
+{% else %}
+  <p>Not found</p>
+{% endif %}
+
+{% if 'age' in my_info %}
+    <p>age in my_info</p>
+    {% if my_info.age < 20 %}
+       <p>未成年です</p>
+    {% endif %}
+{% endif %}
+
+{% if my_info.name != 'Taro' %}
+  <p>Taroでない</p>
+{% endif %}
+<p>{{ status | status_to_string:'taro' }}</p>
+
+<img src="{% static 'static2/sample.jpg' %}">
