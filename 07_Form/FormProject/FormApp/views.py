@@ -1,29 +1,42 @@
 from django.shortcuts import render
-from django.forms import formset_factory, modelformset_factory
 from . import forms
-from .models import ModelSetPost
+from .models import User, Memo
 import os
 from django.core.files.storage import FileSystemStorage
-# Create your views here.
 
 def index(request):
     return render(request, 'formapp/index.html')
 
 def form_page(request):
     form = forms.UserInfo()
+    success_message = ''
     if request.method == 'POST':
-        # Formで送られたデータを取り出す
         form = forms.UserInfo(request.POST)
-        if form.is_valid():# バリデーション(フィールドが正しいかチェック)
+        if form.is_valid(): # バリデーション（フィールドのチェック）
             print('バリデーション成功')
             # print(
-            #     f"name: {form.cleaned_data['name']}, mail: {form.cleaned_data['mail']}, age: {form.cleaned_data['age']}"
+            #     f"""name: {form.cleaned_data['name']}, 
+            #     mail: {form.cleaned_data['mail']},
+            #     age: {form.cleaned_data['age']}"""
             # )
             print(form.cleaned_data)
-
+            name = form.cleaned_data['name']
+            age = form.cleaned_data['age']
+            mail = form.cleaned_data['mail']
+            user = User(
+                name=name, age=age, mail=mail
+            )
+            user.save()
+            success_message = f'{name}を登録しました'
+            
+    form.fields['job'].widget.attrs.update(
+        {'class': 'job-class',}
+    )
+    
     return render(
         request, 'formapp/form_page.html', context={
-            'form': form
+            'form': form,
+            'success_message': success_message
         }
     )
 
@@ -34,52 +47,60 @@ def form_post(request):
         if form.is_valid():
             form.save()
     return render(
-        request, 'formapp/form_post.html', context={'form': form}
+        request, 'formapp/form_post.html', context={
+            'form': form,
+        }
     )
 
 def form_set_post(request):
-    TestFormset = formset_factory(forms.FormSetPost, extra=3)
-    formset = TestFormset(request.POST or None)
-    if formset.is_valid():
-        for form in formset:
-            print(form.cleaned_data)
+    initial_data = [
+        {'title': 'title1', 'memo': 'memo1'},
+        {'title': 'title2', 'memo': 'memo2'}
+    ]
+    formset = forms.MemoFormSet(initial=initial_data)
+    if request.method == "POST":
+        formset = forms.MemoFormSet(request.POST, initial=initial_data)
+        if formset.is_valid():
+            for form in formset.forms:
+                print(form.cleaned_data)
     return render(
         request, 'formapp/form_set_post.html',
-        context = {'formset': formset}
+        context={'formset': formset,}
     )
 
 def modelform_set_post(request):
-    # TestFormSet = modelformset_factory(ModelSetPost, fields='__all__', extra=3)
-    TestFormSet = modelformset_factory(ModelSetPost, form=forms.ModelFormSetPost, extra=3)
-    formset = TestFormSet(request.POST or None, queryset=ModelSetPost.objects.filter(id__gt=3))
+    formset = forms.MemoModelFormSet(request.POST or None,
+        # queryset=Memo.objects.order_by('-pk')[:3]
+        queryset=Memo.objects.filter(title__contains='new')
+    )
     if formset.is_valid():
         formset.save()
     return render(
-        request, 'formapp/modelform_set_post.html', context={'formset': formset}
+        request, 'formapp/modelform_set_post.html',
+        context={
+            'formset': formset,
+        }
     )
 
 def upload_sample(request):
     if request.method == 'POST' and request.FILES['upload_file']:
-        # 送られたファイルの取り出し
         upload_file = request.FILES['upload_file']
-        fs = FileSystemStorage() # ファイルを保存する
+        fs = FileSystemStorage() # ファイルを保存するオブジェクト
         file_path = os.path.join('upload', upload_file.name)
-        file = fs.save(file_path, upload_file)
-        uploaded_file_url = fs.url(file)
-        return  render(request, 'formapp/upload_file.html', context={
-            'uploaded_file_url': uploaded_file_url
-        })
+        print(file_path)
+        file = fs.save(file_path, upload_file) # ファイルの保存
+        uploaded_file_url = fs.url(file) #　保存したファイルを見るURL
+        return render(request, 'formapp/upload_file.html',
+                      context={
+                          'uploaded_file_url': uploaded_file_url,
+                      })
     return render(request, 'formapp/upload_file.html')
 
-
 def upload_model_form(request):
-    user = None
-    if request.method == 'POST':
-        form = forms.UserForm(request.POST, request.FILES)
-        if form.is_valid():
-            user = form.save()
-    else:
-        form = forms.UserForm()
+    form =  forms.ProfileForm(request.POST or None, request.FILES or None)
+    profile = None
+    if form.is_valid():
+        profile = form.save()
     return render(request, 'formapp/upload_model_form.html', context={
-        'form': form, 'user': user
+        'form': form, 'profile': profile,
     })

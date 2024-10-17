@@ -1,12 +1,21 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Form</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  </head>
-  <body>
-     {% include "formapp/form_template2.html" with as_ul=True method='GET' action='/aaa' %}
-  </body>
+    <head>
+        <meta charset="utf-8">
+        <title>Form</title>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    </head>
+    <body>
+        {% if form.non_field_errors %}
+            {% include "formapp/form_error.html" %}
+        {% endif %}
+        <form method="POST">
+            {% csrf_token %}
+            {% include "formapp/form_field.html" with field=form.name %}
+            {% include "formapp/form_field.html" with field=form.title %}
+            {% include "formapp/form_field.html" with field=form.memo %}
+            <input type="submit" value="送信">
+        </form>
+    </body>
 </html>

@@ -1,16 +1,53 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Form</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  </head>
-  <body>
-    <form method="POST">
-     {% csrf_token %}
-     {{ formset.as_p }}
-     <input type="submit" value="送信">
-    </form>
-  </body>
+    <head>
+        <meta charset="utf-8">
+        <title>Form</title>
+        {% load static %}
+    </head>
+    <body>
+        {% if formset.non_form_errors %}
+            <div>
+                {% for error in formset.non_form_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <form method="POST">
+            {% csrf_token %}
+            {# {{ formset.as_p }} #}
+            {{ formset.management_form }}
+            <div id="form-container">
+                {% for form in formset %}
+                    <div class="item-form">
+                        {{ form.as_p }}
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="button" id="add-form">Form追加</button>
+            <input type="submit" value="送信">
+        </form>
+        <script>
+            document.addEventListener('DOMContentLoaded', function(){
+                const addButton = document.getElementById('add-form');
+                const formContainer = document.getElementById('form-container');
+                let formCount = {{ formset.total_form_count }};
+
+                addButton.addEventListener('click', function(){
+                    const newForm = formContainer.children[0].cloneNode(true);
+                    newForm.innerHTML = newForm.innerHTML.replace(/form-0-/g, `form-${formCount}-`)
+                    newForm.querySelectorAll('input[type="text"]').forEach(
+                        input => {
+                            input.value = '';
+                        }
+                    )
+                    formContainer.appendChild(newForm);
+                    formCount++;
+                    const totalForms = document.querySelector("#id_form-TOTAL_FORMS");
+                    totalForms.value = formCount;
+                    console.log(totalForms.value);
+                })
+            })
+        </script>
+    </body>
 </html>

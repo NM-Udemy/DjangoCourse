@@ -1,24 +1,19 @@
 from .models import Students
 from django import forms
 
-
-class StudentInsertForm(forms.ModelForm):
-
-    name = forms.CharField(label='名前')
-    age = forms.IntegerField(label='年齢')
-    grade = forms.IntegerField(label='学年')
-    picture = forms.FileField(label='ファイルアップロード')
-
+class StudentsModelForm(forms.ModelForm):
+    
     class Meta:
         model = Students
         fields = '__all__'
+        labels = {
+            'name': '名前',
+            'age': '年齢',
+            'grade': '学年',
+            'picture': 'ファイルアップロード'
+        }
 
-
-class StudentUpdateForm(forms.Form):
-    name = forms.CharField(label='名前')
-    age = forms.IntegerField(label='年齢')
-    grade = forms.IntegerField(label='学年')
-    picture = forms.FileField(label='ファイルアップロード', required=False)
-
-class StudentDeleteForm(forms.Form):
+class StudentsDeleteForm(forms.Form):
     id = forms.IntegerField(widget=forms.HiddenInput)
+
+StudentsFormSet = forms.modelformset_factory(Students, fields='__all__', extra=3)

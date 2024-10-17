@@ -1,0 +1,6 @@
+<div style="color: red;">{{ field.label }}: {{ field }}</div>
+{% if field.errors %}
+    {% for error in field.errors %}
+        <div style="color: red;">{{ error }}</div>
+    {% endfor %}
+{% endif %}

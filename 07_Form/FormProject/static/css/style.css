@@ -1,13 +1,17 @@
 .mail-class{
-    width: 70%;
     color: blue;
+    width: 70%;
 }
 label[for="id_mail"]{
     color: red;
 }
-#id_job{
-    list-style: none;
+#job{
+    color: green;
+}
+.job-class{
+    padding-left: 10px;
 }
 .hobbies_class{
-    list-style: none;
+    padding-left: 10px;
+    color: blue;
 }
