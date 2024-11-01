@@ -1,0 +1,14 @@
+body {
+      font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN",
+        "Hiragino Sans", "Noto Sans", Meiryo, sans-serif;
+}
+
+#header{
+    background: #333;
+}
+input[type=submit], .module caption{
+    background: #333;
+}
+.dashboard #content{
+    width: 80%;
+}
