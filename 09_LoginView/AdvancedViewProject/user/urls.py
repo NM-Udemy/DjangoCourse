@@ -5,9 +5,11 @@ app_name = 'user'
 
 urlpatterns = [
     path('user_list/', views.user_list, name='user_list'),
+    path('regist/', views.regist, name='regist'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
     path('index/', views.index, name='index'),
-    path('register/', views.register, name='register'),
-    path('user_login/', views.user_login, name='user_login'),
-    path('user_logout/', views.user_logout, name='user_logout'),
     path('info/', views.info, name='info'),
+    path('request_password_reset/', views.request_password_reset, name='request_password_reset'),
+    path('reset_password/<uuid:token>/', views.reset_password, name='reset_password'),
 ]

@@ -4,23 +4,24 @@ from django.http import Http404
 # Create your views here.
 
 def item_list(request):
-    items = Items.objects.all()
-    # items = get_list_or_404(Items, pk__gt=4)
-    return render(request, 'store/item_list.html', context={
-        'items': items
-    })
-
+    # items = Items.objects.all()
+    items = get_list_or_404(Items, price__gt=50, pk__gt=1)
+    return render(
+        request, 'store/item_list.html', context={
+            'items': items,
+        }
+    )
 
 def item_detail(request, id):
-    if id == 0:
-        raise Http404
-    # item = Items.objects.filter(pk=id).first()
-    # item = get_object_or_404(Items, name='りんご', pk=id)
+    # if id == 0:
+    #     raise Http404('idが0です')
+    # try:
+    #     item = Items.objects.get(pk=id)
+    # except:
+    #     return redirect('store:item_list')
     item = get_object_or_404(Items, pk=id)
-    if item is None:
-        return redirect('store:item_list')
     return render(request, 'store/item_detail.html', context={
-        'item': item
+        'item': item,
     })
 
 def to_google(request):
@@ -28,10 +29,3 @@ def to_google(request):
 
 def one_item(request):
     return redirect('store:item_detail', id=1)
-
-def page_not_found(request, exception):
-    return render(request, 'store/404.html', status=404)
-    # return redirect('store:item_list')
-
-def server_error(request):
-    return render(request, 'store/500.html', status=500)

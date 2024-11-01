@@ -1,4 +1,8 @@
-{% extends "user/base.html" %}
+{% extends 'user/base.html' %}
 {% block content %}
-<h1>Login Sample</h1>
+{% if user.is_authenticated %}
+    <p>{{ user }}さん、こんにちは<p>
+{% else %}
+    <h1>ログインしてください</h1>
+{% endif %}
 {% endblock %}
