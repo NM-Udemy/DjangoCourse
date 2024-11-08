@@ -1,39 +1,37 @@
 from django.db import models
+from accounts.models import User
 
-
-class ThemesManager(models.Manager):
-
+class ThemeManager(models.Manager):
+    
     def fetch_all_themes(self):
         return self.order_by('id').all()
 
-
-class Themes(models.Model):
-
+class Theme(models.Model):
     title = models.CharField(max_length=255)
     user = models.ForeignKey(
-        'accounts.Users', on_delete=models.CASCADE
+        User, on_delete=models.CASCADE,
     )
-
-    objects = ThemesManager()
-
+    
+    objects: ThemeManager = ThemeManager()
+    
     class Meta:
-        db_table = 'themes'
+        db_table = 'theme'
 
+class CommentManager(models.Manager):
 
-class CommentsManager(models.Manager):
     def fetch_by_theme_id(self, theme_id):
         return self.filter(theme_id=theme_id).order_by('id').all()
 
-class Comments(models.Model):
-
+class Comment(models.Model):
     comment = models.CharField(max_length=1000)
     user = models.ForeignKey(
-        'accounts.Users', on_delete=models.CASCADE
+        User, on_delete=models.CASCADE,
     )
     theme = models.ForeignKey(
-        'Themes', on_delete=models.CASCADE
+        Theme, on_delete=models.CASCADE,
     )
-    objects = CommentsManager()
-
+    
+    objects: CommentManager = CommentManager()
+    
     class Meta:
-        db_table = 'comments'
+        db_table = 'comment'

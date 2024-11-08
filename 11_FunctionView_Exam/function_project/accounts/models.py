@@ -5,54 +5,68 @@ from django.contrib.auth.models import (
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from uuid import uuid4
-from datetime import datetime, timedelta
+from django.utils import timezone
+from datetime import timedelta
 from django.contrib.auth.models import UserManager
 
-
-class Users(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=255)
     age = models.PositiveIntegerField()
     email = models.EmailField(max_length=255, unique=True)
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     picture = models.FileField(null=True, upload_to='picture/')
-
+    
     objects = UserManager()
-
+    
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
-
+    
     class Meta:
-        db_table = 'users'
+        db_table = 'user'
 
-class UserActivateTokensManager(models.Manager):
-
+class UserActivateTokenManager(models.Manager):
+    
     def activate_user_by_token(self, token):
         user_activate_token = self.filter(
             token=token,
-            expired_at__gte=datetime.now()
+            expired_at__gte=timezone.now()
         ).first()
+        if not user_activate_token:
+            raise ValueError('トークンが存在しません')
+        
         user = user_activate_token.user
         user.is_active = True
         user.save()
+        return user
+    
+    def create_or_update_token(self, user):
+        token = str(uuid4()) # トークンの発行
+        expired_at = timezone.now() + timedelta(days=1) # トークンの期限（1日後）
+        user_token, created = self.update_or_create(
+            user=user,
+            defaults={'token': token, 'expired_at': expired_at,}
+        )
+        return user_token
+        
 
-class UserActivateTokens(models.Model):
-
-    token = models.UUIDField(db_index=True)
+class UserActivateToken(models.Model):
+    token = models.UUIDField(db_index=True, unique=True)
     expired_at = models.DateTimeField()
-    user = models.ForeignKey(
-        'Users', on_delete=models.CASCADE
+    user = models.OneToOneField(
+        'User',
+        on_delete=models.CASCADE,
+        related_name='user_activate_token',
     )
-
-    objects = UserActivateTokensManager()
-
+    
+    objects: UserActivateTokenManager = UserActivateTokenManager()
+    
     class Meta:
-        db_table = 'user_activate_tokens'
-
-@receiver(post_save, sender=Users)
-def publish_token(sender, instance, **kwargs):
-    user_activate_token = UserActivateTokens.objects.create(
-        user=instance, token=str(uuid4()), expired_at=datetime.now() + timedelta(days=1)
+        db_table = 'user_activate_token'
+        
+@receiver(post_save, sender=User)
+def publish_token(sender, instance, created, **kwargs):
+    user_activate_token = UserActivateToken.objects.create_or_update_token(instance)
+    print(
+        f'http://127.0.0.1:8000/accounts/activate_user/{user_activate_token.token}'
     )
-    # メールでURLを送る方がよい
-    print(f'http://127.0.0.1:8000/accounts/activate_user/{user_activate_token.token}')

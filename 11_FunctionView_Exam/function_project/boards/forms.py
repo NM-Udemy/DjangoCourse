@@ -1,24 +1,28 @@
 from django import forms
-from .models import Themes, Comments
-
+from .models import Theme, Comment
 
 class CreateThemeForm(forms.ModelForm):
-    title = forms.CharField(label='タイトル')
-
+    
     class Meta:
-        model = Themes
+        model = Theme
         fields = ('title',)
-
-
-class DeleteThemeForm(forms.ModelForm):
-
-    class Meta:
-        model = Themes
-        fields = []
+        labels = {
+            'title': 'タイトル',
+        }
+        
+class DeleteThemeForm(forms.Form):
+    pass
 
 class PostCommentForm(forms.ModelForm):
-    comment = forms.CharField(label='', widget=forms.Textarea(attrs={'rows': 5, 'cols': 60}))
-
+    
     class Meta:
-        model = Comments
-        fields = ('comment', )
+        model = Comment
+        fields = ('comment',)
+        widgets = {
+            'comment': forms.Textarea(
+                attrs={'rows': 5, 'cols': 60},
+            )
+        }
+        labels = {
+            'comment': '',
+        }

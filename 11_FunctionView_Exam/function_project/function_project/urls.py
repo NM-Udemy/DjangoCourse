@@ -9,7 +9,8 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('boards/', include('boards.urls')),
 ]
-handler404 = show_error_page
+handler = show_error_page
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(
+        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

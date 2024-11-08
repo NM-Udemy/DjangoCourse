@@ -1,32 +1,37 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block content %}
-{% if messages %}
-  {% for message in messages %}
-  <div>{{ message.message }}</div>
-  {% endfor %}
-{% endif %}
 <h3>掲示板一覧画面</h3>
-<p><a class="navbar-brand" href="{% url 'boards:create_theme' %}">掲示板を新たに作成する</a></p>
+<p>
+    <a class="navbar-brand" href="{% url 'boards:create_theme' %}">掲示板を作成</a>
+</p>
 <table class="table table-striped table-hover">
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>タイトル</th>
-      <th>作成者</th>
-    </tr>
-  </thead>
-  <tbody>
-  {% for theme in themes %}
-    <tr>
-        <td>{{ forloop.counter }}</td>
-        <td><a href="{% url 'boards:post_comments' theme_id=theme.id %}">{{ theme.title }}</a></td>
-        {% if theme.user.id == user.id %}
-           <td><a href="{% url 'boards:edit_theme' id=theme.id %}">{{ theme.user }}</a></td>
-        {% else %}
-           <td>{{ theme.user }}</td>
-        {% endif %}
-    </tr>
-  {% endfor %}
-  </tbody>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>タイトル</th>
+            <th>作成者</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for theme in themes %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>
+                    <a href="{% url 'boards:post_comment' theme_id=theme.id %}">
+                    {{ theme.title }}
+                    </a>
+                </td>
+                <td>
+                    {% if theme.user.id == user.id %}
+                        <a href="{% url 'boards:edit_theme' pk=theme.id %}">
+                            {{ theme.user }}
+                        </a>
+                    {% else %}
+                        {{ theme.user }}
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
 </table>
 {% endblock %}

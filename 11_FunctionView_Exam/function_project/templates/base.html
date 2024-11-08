@@ -1,24 +1,30 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="utf-8">
-    <!-- bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
-  </head>
-  <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="{% url 'accounts:home' %}">ホーム</a>
-      <a class="navbar-brand" href="{% url 'boards:list_themes' %}">掲示板一覧</a>
-      {% if user.is_authenticated %}
-      <a class="navbar-brand" href="{% url 'accounts:user_logout' %}">ログアウト</a>
-      <a class="navbar-brand" href="{% url 'accounts:user_edit' %}">ユーザ情報更新</a>
-      {% else %}
-      <a class="navbar-brand" href="{% url 'accounts:user_login' %}">ログイン</a>
-      <a class="navbar-brand" href="{% url 'accounts:regist' %}">ユーザ登録</a>
-      {% endif %}
-    </nav>
-  {% block content %}{% endblock %}
-  {% block javascript %}{% endblock %}
-  </body>
+    <head>
+        <meta charset="utf-8">
+        <!-- bootstrap -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'accounts:home' %}">ホーム</a>
+                <a class="navbar-brand" href="{% url 'boards:list_themes' %}">掲示板一覧</a>
+                {% if user.is_authenticated %}
+                <a class="navbar-brand" href="{% url 'boards:create_theme' %}">掲示板作成</a>
+                <a class="navbar-brand" href="{% url 'accounts:logout' %}">ログアウト</a>
+                <a class="navbar-brand" href="{% url 'accounts:edit' %}">ユーザー情報更新</a>
+                {% else %}
+                   <a class="navbar-brand" href="{% url 'accounts:login' %}">ログイン</a>
+                  <a class="navbar-brand" href="{% url 'accounts:regist' %}">ユーザー登録</a>
+                {% endif %}
+            </div>
+        </nav>
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+        <script>
+            {% block javascript %}{% endblock %}
+        </script>
+    </body>
 </html>

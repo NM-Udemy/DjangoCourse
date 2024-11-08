@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>{{ theme.title }}</h3>
+{% for comment in comments %}
+    <div class="col-1 offset-1">
+        {% if comment.user.picture %}
+        <img style="float:left;" width="50px" height="50px" src="{{ comment.user.picture.url}}">
+        {% endif %}
+    </div>
+    <div class="col-8 offset-2">
+        <p>名前: {{ comment.user.username }}</p>
+        <p>{{ comment.comment|linebreaks }}</p>
+    </div>
+    <div class="col-10 offset-1">
+        <hr>
+    </div>
+{% endfor %}
+<div class="col-3 offset-6">
+    <form method="POST" id="comment-form">
+        {% csrf_token %}
+        {{ post_comment_form.as_p }}
+        <input type="button" value="一時保存" id="save_comment">
+        <input type="submit" value="コメント送信">
+    </form>
+</div>
+{% endblock %}
+{% block javascript %}
+document.addEventListener('DOMContentLoaded', function(){
+    const themeId = "{{ theme.id }}";
+    const user_id = "{{ user.id }}";
+    const commentInput = document.getElementById('id_comment');
+    const storageKey = `saved_comment_${themeId}_${user_id}`;
+
+    // 復元
+    const cachedComment = localStorage.getItem(storageKey);
+    if(cachedComment){
+        commentInput.value = cachedComment;
+    }
+    // 一時保存
+    document.getElementById('save_comment').addEventListener('click', function(){
+        const comment = commentInput.value;
+        if(comment){
+            localStorage.setItem(storageKey, comment);
+            alert('コメントを一時保存しました');
+        }else{
+            alert('コメントを入力してください');
+        }
+    });
+    // フォーム送信時のクリア
+    document.getElementById('comment-form').addEventListener('submit', function(){
+        localStorage.removeItem(storageKey);
+    });
+});
+{% comment %}
+document.addEventListener('DOMContentLoaded', function(){
+
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    document.getElementById('save_comment').addEventListener('click', function(){
+        const comment = document.getElementById('id_comment').value;
+        const themeId = "{{ theme.id }}";
+        fetch("{% url 'boards:save_comment' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': csrftoken,
+            },
+            body: `comment=${encodeURIComponent(comment)}&theme_id=${encodeURIComponent(themeId)}`
+        })
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            if(data.message){
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            console.log('Error: ', error);
+        })
+    });
+});
+{% endcomment %}
+{% endblock %}
