@@ -1,0 +1,28 @@
+<script>
+    function deletePicture(pictureId){
+        const form = document.getElementById('delete-form');
+        form.action = `/store/delete_picture/${pictureId}/`;
+        form.submit();
+    }
+</script>
+    
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <hr>
+    {% for picture in books.pictures.all %}
+    <img width="100px" height="100px" src='{{ picture.picture.url }}' onclick="deletePicture({{ picture.id }})">
+    {% endfor %}
+    {{ picture_form.as_p }}
+    <input type="submit" value="更新">
+</form>
+
+<form id="delete-form" method="POST">
+    {% csrf_token %}
+</form>
+
+<style>
+    img:hover{
+        opacity: 0.7;
+    }
+</style>

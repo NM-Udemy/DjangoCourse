@@ -1,0 +1,5 @@
+<form method="POST">
+    {% csrf_token %}
+    <p>{{ books.name }}を削除しても良いでしょうか？</p>
+    <input type="submit" value="削除する">
+</form>

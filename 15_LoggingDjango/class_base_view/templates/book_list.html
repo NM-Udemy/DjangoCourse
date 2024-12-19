@@ -1,0 +1,58 @@
+<script>
+function deletePicture(pictureId){
+    const form = document.getElementById('delete-form');
+    form.action = `/store/delete_picture/${pictureId}/`;
+    form.submit();
+}
+</script>
+<p><a href="{% url 'store:add_book' %}">データ追加</a></p>
+<table>
+    <tbody>
+        {% for book in books %}
+        <tr>
+            <td>名前: <a href="{{ book.get_absolute_url }}">{{ book.name }}</a></td>
+            <td>説明: {{ book.description }}</td>
+            <td>値段: {{ book.price }}
+            <a href="?price_gt={{ book.price }}">この価格以上を表示</a></td>
+            <td><a href="{% url 'store:edit_book' book.pk %}">編集</a></td>
+            <td><a href="{% url 'store:delete_book' book.pk %}">削除</a></td>
+            <td>
+                {% for picture in book.pictures.all %}
+                <img width="20px" height="20px"
+                 src="{{ picture.picture.url }}" onclick="deletePicture({{ picture.id }})">
+                {% endfor %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<form id="delete-form" method="POST">
+    {% csrf_token %}
+</form>
+
+{% if is_paginated %}
+<div>
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">前へ</a>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            {{ num }}
+        {% else %}
+            <a href="?page={{num}}">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">次へ</a>
+    {% endif %}
+</div>
+{% endif %}
+
+<style>
+    img:hover{
+        opacity: 0.7;
+    }
+</style>
+    

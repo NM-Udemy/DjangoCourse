@@ -1,0 +1,2 @@
+2024-12-18 18:15:57,450 INFO [/Users/matsumotonaoki/Documents/100_動画/django/ソースコード/15_LoggingDjango/class_base_view/class_base_view/middleware.py:30] /store/list_books/?price_gt=1000: 0.005261898040771484s
+2024-12-18 18:16:02,424 INFO [/Users/matsumotonaoki/Documents/100_動画/django/ソースコード/15_LoggingDjango/class_base_view/class_base_view/middleware.py:30] /store/edit_book/3/: 0.016482114791870117s

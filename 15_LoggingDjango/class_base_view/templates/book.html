@@ -1,0 +1,10 @@
+{% if messages %}
+    {% for message in messages %}
+        <div>{{ message.message }}</div>
+    {% endfor %}
+{% endif %}
+
+{{ book.name }}<br>
+{{ book.description }}<br>
+{{ book.price }}円<br>
+{{ price_with_tax }}円（税込）
