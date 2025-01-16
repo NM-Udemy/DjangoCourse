@@ -1,8 +1,0 @@
-{% extends 'base.html' %}
-{% block content %}
-<h2>{{ object.product.name }}をカートから削除しますか？</h2>
-<form method="POST">
-{% csrf_token %}
-<input type="submit" value="削除">
-</form>
-{% endblock %}

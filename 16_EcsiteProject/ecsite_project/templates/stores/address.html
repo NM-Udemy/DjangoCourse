@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="col-6 offset-3">
+        <h3>住所一覧</h3>
+        <div id="address-list">
+            {% for address in addresses %}
+                <div class="border p-3 mb-3" id="address-{{ address.id }}">
+                    <input type="radio" name="selected_address"
+                    id="address_radio_{{ address.id }}"
+                    value="{{ address.id }}">
+                    <p>〒{{ address.zip_code }}</p>
+                    <p>{{ address.prefecture }} {{ address.address }}</p>
+                    <button class="btn btn-danger delete-address"
+                    data-id="{{ address.id }}">
+                        削除
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+        <button id="order_product" class="btn btn-primary mb-4">選択して進む</button>
+        <div class="mt-4">
+            <h4>新規住所登録</h4>
+            <div class="mb-3">
+                <label>郵便番号</label>
+                <input type="text" id="zip_code" maxlength="8">
+            </div>
+            <div class="mb-3">
+                <label>都道府県</label>
+                <input type="text" id="prefecture" maxlength="10">
+            </div>
+            <div class="mb-3">
+                <label>住所</label>
+                <input type="text" id="address" maxlength="200">
+            </div>
+            <button id="save_address" class="btn btn-primary">登録</button>
+        </div>
+        {% csrf_token %}
+    </div>
+<script>
+    function validateZipCode(zipCode){
+        if(!zipCode){
+            return '郵便番号を入力してください'
+        }
+        if(!zipCode.match(/^\d{7}$/)){
+            return '郵便番号は数値7桁にしてください'
+        }
+    }
+    function validatePrefecture(prefecture){
+        if(!prefecture){
+            return '都道府県を入力してください';
+        }
+        if(prefecture.length > 10){
+            return '都道府県は10文字以内にしてください';
+        }
+    }
+    function validateAddress(address){
+        if(!address){
+            return '住所を入力してください';
+        }
+        if(address.length > 200){
+            return '住所は200文字以内にしてください';
+        }
+    }
+    document.getElementById('order_product').addEventListener('click', function(){
+        const selectedAddress = document.querySelector('input[name="selected_address"]:checked');
+        if(!selectedAddress){
+            alert('住所を選択してください');
+            return;
+        }
+        window.location.href = "{% url 'stores:order_product' %}?address_id=" + selectedAddress.value;
+    });
+    document.getElementById('save_address').addEventListener('click', function(){
+        const zipCode = document.getElementById('zip_code').value;
+        const zipCodeError = validateZipCode(zipCode);
+        if(zipCodeError){
+            alert(zipCodeError);
+            return;
+        }
+        const prefecture = document.getElementById('prefecture').value;
+        const prefectureError = validatePrefecture(prefecture);
+        if(prefectureError){
+            alert(prefectureError);
+            return;
+        }
+        const address = document.getElementById('address').value;
+        const addressError = validateAddress(address);
+        if(addressError){
+            alert(addressError);
+            return;
+        }
+        const data = {
+            zip_code: zipCode,
+            prefecture: prefecture,
+            address: address,
+        }
+        const token = document.querySelector('input[name=csrfmiddlewaretoken]').value;
+        fetch("{% url 'stores:set_address' %}", {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json',
+                'X-CSRFToken': token,
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            return response.json();
+        })
+        .then(json => {
+            const addressList = document.getElementById('address-list');
+            const newAddress = document.createElement('div');
+            newAddress.className = 'border p-3 mb-3';
+            newAddress.id = `address-${json.address_id}`;
+            newAddress.innerHTML = `
+                <input type="radio" name="selected_address"
+                        id="address_radio_${json.address_id}"
+                        value="${json.address_id}">
+                <p>〒${data.zip_code}</p>
+                <p>${data.prefecture } ${data.address}</p>
+                <button class="btn btn-danger delete-address"
+                data-id="${json.address_id}">
+                    削除
+                </button>
+            `
+            const deleteButton = newAddress.querySelector('.delete-address')
+            addDeleteEventListener(deleteButton);
+            addressList.appendChild(newAddress);
+        })
+        .catch(error => {
+            alert(error);
+        });
+    });
+
+    function addDeleteEventListener(button) {
+        button.addEventListener('click', function(){
+            if(confirm('住所を削除してよろしいですか？')){
+                const token = document.querySelector('input[name=csrfmiddlewaretoken]').value;
+                const addressId = this.dataset.id;
+                fetch("{% url 'stores:set_address' %}", {
+                    method: 'DELETE',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': token,
+                    },
+                    body: JSON.stringify({
+                        id: addressId
+                    })
+                })
+                .then(response => {
+                    return response.json();
+                })
+                .then(json => {
+                    const addressElement = document.getElementById(`address-${addressId}`);
+                    if(addressElement){
+                        addressElement.remove();
+                    }
+                })
+                .catch(error => {
+                    alert(error);
+                });
+            }
+        });
+    }
+    document.querySelectorAll('.delete-address').forEach(button => {
+        addDeleteEventListener(button);
+    });
+</script>
+{% endblock %}

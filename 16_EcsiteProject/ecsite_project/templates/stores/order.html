@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="col-10 offset-1">
+        {% if cart_items %}
+            <table class="table">
+                <tbody>
+                    {% for cart_item in cart_items %}
+                        <tr>
+                            <td class="align-middle" style="width:20%">
+                            {% if cart_item.picture %}
+                                <img width="75px" height="75px" src="{{ cart_item.picture.url }}">
+                            {% endif %}
+                            </td>
+                            <td class="align-middle" style="width:60%">
+                                {{ cart_item.name }}<br>{{ cart_item.price }}円
+                            </td>
+                            <td class="align-middle text-end" style="width: 20%">
+                                <span class="me-3">{{ cart_item.quantity }}個</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="card my-4">
+                <div class="card-header">
+                    <h5 class="mb-0">配送先住所</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0">〒{{ address.zip_code }}</p>
+                    <p class="mb-0">{{ address.prefecture }} {{ address.address }}</p>
+                </div>
+            </div>
+            <hr>
+            <h3 class="offset-9">合計: {{ total_price }}円</h3>
+        {% else %}
+            <h2>カートに商品が入っていません</h2>
+        {% endif %}
+    </div>
+    <form method="post" class="mt-4">
+        {% csrf_token %}
+        {{ form }}
+        <div class="text-end mt-3">
+            <button class="btn btn-primary" type="submit">注文を確定する</button>
+        </div>
+    </form>
+    {% csrf_token %}
+{% endblock %}
