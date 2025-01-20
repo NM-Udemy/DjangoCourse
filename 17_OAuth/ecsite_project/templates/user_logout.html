@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block content %}
+<form method="POST">
+    {% csrf_token %}
+    <input type="submit" value="ログアウト">
+</form>
+{% endblock %}

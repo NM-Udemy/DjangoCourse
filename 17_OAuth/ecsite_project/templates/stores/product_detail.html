@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="col-6 offset-3">
+    <div style="float: left; padding: 0 20px 20px 0px">
+        {% for picture in product.pictures.all %}
+            {% if forloop.first %}
+                <div><img width="200px" height="200px" src="{{ picture.picture.url }}"></div>
+            {% else %}
+                <img width="50px" height="50px" src="{{ picture.picture.url }}">
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div>
+        <p>商品名: {{ product.name }}</p>
+        <p>値段: {{ product.price }}円</p>
+        <p>在庫: {{ product.stock }}個</p>
+        {% if product.stock %}
+            <input type="number" id="quantity" name="quantity" min="1" max="{{ product.stock }}" value="{{ cart_quantity|default:1 }}"><br>
+            {% if is_added %}
+                <button id="update_cart" type="button" class="btn btn-warning">カートを更新</button>
+                <button id="remove_from_cart" type="button" class="btn btn-danger">カートから削除</button>
+            {% else %}
+                <button id="add_to_cart" type="button" class="btn btn-primary">カートに追加</button>
+            {% endif %}
+        {% endif %}
+    </div>
+    {% csrf_token %}
+</div>
+<script>
+function handleCartOperation(method, buttonId){
+    document.getElementById(buttonId)?.addEventListener('click', function(){
+        const quantity = document.getElementById('quantity').value;
+        const token = document.querySelector('input[name=csrfmiddlewaretoken]').value;
+        fetch("{% url 'stores:cart_item' %}", {
+            method: method,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json',
+                'X-CSRFToken': token,
+            },
+            body: JSON.stringify({
+                product_id: "{{ product.id }}",
+                quantity: quantity
+            })
+        })
+        .then(response => {
+            return response.json();
+        })
+        .then(json => {
+            alert(json.message);
+            location.reload();
+        })
+        .catch(error => {
+            alert(error.message);
+        })
+    })
+}
+handleCartOperation('POST', 'add_to_cart');
+handleCartOperation('PUT', 'update_cart');
+handleCartOperation('DELETE', 'remove_from_cart');
+
+</script>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="col-10 offset-1">
+    <h2>商品一覧</h2>
+    {% if is_paginated %}
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if product_type_name %}&product_type_name={{ product_type_name }}{% endif %}{% if product_name %}&product_name={{ product_name }}{% endif %}{% if order_by_price %}&order_by_price={{ order_by_price }}{% endif %}">前へ</a>
+        {% endif %}
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                {{ num }}
+            {% else %}
+                <a href="?page={{ num }}{% if product_type_name %}&product_type_name={{ product_type_name }}{% endif %}{% if product_name %}&product_name={{ product_name }}{% endif %}{% if order_by_price %}&order_by_price={{ order_by_price }}{% endif %}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if product_type_name %}&product_type_name={{ product_type_name }}{% endif %}{% if product_name %}&product_name={{ product_name }}{% endif %}{% if order_by_price %}&order_by_price={{ order_by_price }}{% endif %}">次へ</a>
+        {% endif %}
+    {% endif %}
+    <form method="get">
+        <p>商品タイプ: <input type="text" name="product_type_name" value="{{ product_type_name }}" /></p>
+        <p>商品名: <input type="text" name="product_name" value="{{ product_name }}" /></p>
+        <p>
+            値段で並び替える:
+            昇順<input type="radio" name="order_by_price" value="1" {% if ascending %}checked{% endif %}>
+            降順<input type="radio" name="order_by_price" value="2" {% if descending %}checked{% endif %}>
+        </p>
+        <input type="submit" value="実行" />
+    </form>
+
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <td>種類</td>
+                <td>製品名</td>
+                <td>値段</td>
+                <td>在庫数</td>
+                <td>メーカー</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+                <tr>
+                    <td>{{ product.product_type.name }}</td>
+                    <td><a href="{% url 'stores:product_detail' pk=product.id %}">{{ product.name }}</a></td>
+                    <td>{{ product.price }}円</td>
+                    <td>{{ product.stock }}個</td>
+                    <td>{{ product.manufacturer.name }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

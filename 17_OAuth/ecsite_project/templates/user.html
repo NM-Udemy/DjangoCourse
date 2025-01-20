@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>ユーザー画面です。ログインが必要です</h1>
+<p>{{ user.username }}</p>
+<form method="POST">
+    {{ form.as_p }}
+    {% csrf_token %}
+    <button type="submit">パスワード変更する</button>
+</form>
+{% endblock %}
