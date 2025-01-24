@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    .login-button{
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #4285f4;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+    .login-button:hover{
+        background-color: #357abd;
+    }
+</style>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="ログイン">
+</form>
+<a href="{% url 'accounts:google_login' %}" class="login-button">
+    Googleログイン
+</a>
+{% endblock %}
